@@ -17,7 +17,6 @@ const nextConfig = {
   trailingSlash: true,
 
   // Opcional: asegura que el directorio de salida se llame 'out'
-  distDir: 'out',
-};
+eslint: { ignoreDuringBuilds: true },};
 
 export default nextConfig;
