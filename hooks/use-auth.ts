@@ -6,6 +6,7 @@ import { getApiUrl } from '@/lib/api-config'
 
 /**
  * Hook para manejar autenticación en toda la app
+ * Conectado con el backend de Spring Boot (Puerto 8080)
  */
 export function useAuth(): AuthContext {
   const [usuario, setUsuario] = useState<UsuarioPublico | null>(null)
@@ -27,7 +28,7 @@ export function useAuth(): AuthContext {
         }
       } catch (error) {
         console.error('[AUTH] Error cargando auth desde storage:', error)
-        logout() // Cambiado de limpiar() a logout()
+        logout()
       } finally {
         setIsLoading(false)
       }
@@ -48,26 +49,25 @@ export function useAuth(): AuthContext {
           body: JSON.stringify({ email, password } as LoginRequest),
         })
 
-        if (!response.ok) {
-          const data = await response.json()
-          throw new Error(data.error || 'Error en login')
-        }
-
         const data = await response.json()
 
-        // Guardar en estado y storage
-        setToken(data.data.token)
-        setUsuario(data.data.usuario)
+        if (!response.ok) {
+          throw new Error(data.message || 'Error en login')
+        }
+
+        // Estructura de Spring Boot: { token, usuario, message }
+        setToken(data.token)
+        setUsuario(data.usuario)
         setIsAutenticado(true)
 
-        localStorage.setItem('auth_token', data.data.token)
-        localStorage.setItem('auth_usuario', JSON.stringify(data.data.usuario))
+        localStorage.setItem('auth_token', data.token)
+        localStorage.setItem('auth_usuario', JSON.stringify(data.usuario))
 
         console.log('[AUTH] ✅ Login exitoso')
       } catch (error) {
         const mensaje = error instanceof Error ? error.message : 'Error desconocido'
         console.error('[AUTH] Error en login:', mensaje)
-        logout() // Cambiado de limpiar() a logout()
+        logout()
         throw error
       } finally {
         setIsLoading(false)
@@ -86,35 +86,30 @@ export function useAuth(): AuthContext {
           throw new Error('Las contraseñas no coinciden')
         }
 
-        if (data.password.length < 8) {
-          throw new Error('La contraseña debe tener mínimo 8 caracteres')
-        }
-
         const response = await fetch(getApiUrl('/api/auth/register'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         })
 
-        if (!response.ok) {
-          const responseData = await response.json()
-          throw new Error(responseData.error || 'Error en registro')
-        }
-
         const responseData = await response.json()
 
-        setToken(responseData.data.token)
-        setUsuario(responseData.data.usuario)
+        if (!response.ok) {
+          throw new Error(responseData.message || 'Error en registro')
+        }
+
+        setToken(responseData.token)
+        setUsuario(responseData.usuario)
         setIsAutenticado(true)
 
-        localStorage.setItem('auth_token', responseData.data.token)
-        localStorage.setItem('auth_usuario', JSON.stringify(responseData.data.usuario))
+        localStorage.setItem('auth_token', responseData.token)
+        localStorage.setItem('auth_usuario', JSON.stringify(responseData.usuario))
 
         console.log('[AUTH] ✅ Registro exitoso')
       } catch (error) {
         const mensaje = error instanceof Error ? error.message : 'Error desconocido'
         console.error('[AUTH] Error en registro:', mensaje)
-        logout() // Cambiado de limpiar() a logout()
+        logout()
         throw error
       } finally {
         setIsLoading(false)
@@ -124,10 +119,12 @@ export function useAuth(): AuthContext {
   )
 
   // ======================== GOOGLE LOGIN ========================
+  // El login de Google se maneja redirigiendo al backend de Spring Boot directamente
   const googleLogin = useCallback(async () => {
     try {
       setIsLoading(true)
-      window.location.href = getApiUrl('/api/auth/google')
+      // Endpoint de Spring Boot OAuth2 (Redirige a Google)
+      window.location.href = getApiUrl('/oauth2/authorization/google')
     } catch (error) {
       const mensaje = error instanceof Error ? error.message : 'Error desconocido'
       console.error('[AUTH] Error en Google login:', mensaje)
@@ -136,7 +133,7 @@ export function useAuth(): AuthContext {
     }
   }, [])
 
-  // ======================== LOGOUT (Antes se llamaba limpiar) ========================
+  // ======================== LOGOUT ========================
   const logout = useCallback(() => {
     setToken(null)
     setUsuario(null)
@@ -154,7 +151,7 @@ export function useAuth(): AuthContext {
     login,
     register,
     googleLogin,
-    logout, // Ahora sí existe esta variable para retornar
+    logout,
   }
 }
 
