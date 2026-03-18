@@ -1,0 +1,6 @@
+{
+  "appId": "com.clearpet.iot",
+  "appName": "Monitoreo Ambiental IoT",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}

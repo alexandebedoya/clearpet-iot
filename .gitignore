@@ -15,3 +15,29 @@ next.user-config.*
 node_modules/
 .next/
 .DS_Store
+
+# Dependencias
+node_modules/
+
+# Next.js y compilación frontend
+.next/
+dist/
+out/
+build/
+
+# Variables de entorno (Seguridad)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Java / Spring Boot
+target/
+*.class
+.mvn/
+.metadata/
+
+# Mobile (Capacitor/Android)
+android/app/build/
+android/.gradle/

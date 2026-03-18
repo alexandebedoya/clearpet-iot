@@ -1,22 +1,28 @@
 /**
- * Obtiene la URL base de la API
- * En desarrollo: http://localhost:3000
- * En producción: la URL de Vercel o servidor remoto
+ * Configuración de la API
+ * En desarrollo: http://localhost:8080 (Spring Boot Backend)
+ * En producción: URL del servidor Spring Boot
  */
+
+const API_URL_DEVELOPMENT = 'http://localhost:8080'
+const API_URL_PRODUCTION = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+
 export function getApiBaseUrl(): string {
-  // Para cliente (navegador)
-  if (typeof window !== 'undefined') {
-    return process.env.NEXT_PUBLIC_API_URL || window.location.origin
+  if (typeof window === 'undefined') {
+    // SSR - servidor
+    return API_URL_DEVELOPMENT
   }
 
-  // Para servidor (SSR)
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+  // Cliente - navegador
+  if (process.env.NODE_ENV === 'production') {
+    return API_URL_PRODUCTION
+  }
+
+  return API_URL_DEVELOPMENT
 }
 
-/**
- * Construye la URL completa para un endpoint de API
- */
-export function getApiUrl(endpoint: string): string {
-  const baseUrl = getApiBaseUrl()
-  return `${baseUrl}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`
+export function getApiUrl(endpoint: string) {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  return `${baseUrl}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
 }
+// Borra cualquier otro "return" que haya quedado suelto abajo

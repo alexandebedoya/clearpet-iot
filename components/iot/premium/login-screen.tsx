@@ -1,28 +1,61 @@
 "use client"
 
 import { useState } from "react"
-import { Wind, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react"
+import { Wind, Mail, Lock, Eye, EyeOff, Loader2, UserPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/hooks/use-auth"
 
 interface LoginScreenProps {
   onLogin: () => void
 }
 
+type AuthMode = 'login' | 'register'
+
 export function LoginScreen({ onLogin }: LoginScreenProps) {
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [authMode, setAuthMode] = useState<AuthMode>('login')
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    nombre: ''
+  })
+  const [errors, setErrors] = useState<string[]>([])
+
+  const { login, register, isLoading } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-    // Simulate login
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    setIsLoading(false)
-    onLogin()
+    setErrors([])
+
+    try {
+      if (authMode === 'login') {
+        await login(formData.email, formData.password)
+        onLogin()
+      } else {
+        // Register mode
+        if (formData.password !== formData.confirmPassword) {
+          setErrors(['Las contraseñas no coinciden'])
+          return
+        }
+        if (formData.nombre.trim().length < 2) {
+          setErrors(['El nombre debe tener al menos 2 caracteres'])
+          return
+        }
+        await register({
+          email: formData.email,
+          password: formData.password,
+          nombre: formData.nombre
+        })
+        // Auto-login after successful registration
+        await login(formData.email, formData.password)
+        onLogin()
+      }
+    } catch (error: any) {
+      setErrors([error.message || 'Error en la autenticación'])
+    }
   }
 
   return (
@@ -54,6 +87,23 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Name Field (only for register) */}
+            {authMode === 'register' && (
+              <div className="relative group">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
+                  <UserPlus className="w-5 h-5" />
+                </div>
+                <Input
+                  type="text"
+                  placeholder="Nombre completo"
+                  value={formData.nombre}
+                  onChange={(e) => setFormData(prev => ({ ...prev, nombre: e.target.value }))}
+                  className="pl-12 h-14 rounded-2xl bg-secondary/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  required
+                />
+              </div>
+            )}
+
             {/* Email Field */}
             <div className="relative group">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
@@ -62,8 +112,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               <Input
                 type="email"
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                 className="pl-12 h-14 rounded-2xl bg-secondary/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 required
               />
@@ -76,9 +126,9 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               </div>
               <Input
                 type={showPassword ? "text" : "password"}
-                placeholder="Contrasena"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Contraseña"
+                value={formData.password}
+                onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                 className="pl-12 pr-12 h-14 rounded-2xl bg-secondary/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 required
               />
@@ -91,12 +141,42 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               </button>
             </div>
 
-            {/* Forgot Password */}
-            <div className="text-right">
-              <button type="button" className="text-sm text-primary hover:text-primary/80 transition-colors">
-                Olvidaste tu contrasena?
-              </button>
-            </div>
+            {/* Confirm Password Field (only for register) */}
+            {authMode === 'register' && (
+              <div className="relative group">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
+                  <Lock className="w-5 h-5" />
+                </div>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Confirmar contraseña"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                  className="pl-12 pr-12 h-14 rounded-2xl bg-secondary/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  required
+                />
+              </div>
+            )}
+
+            {/* Errors */}
+            {errors.length > 0 && (
+              <div className="space-y-1">
+                {errors.map((error, index) => (
+                  <p key={index} className="text-sm text-red-500 text-center">
+                    {error}
+                  </p>
+                ))}
+              </div>
+            )}
+
+            {/* Forgot Password (only for login) */}
+            {authMode === 'login' && (
+              <div className="text-right">
+                <button type="button" className="text-sm text-primary hover:text-primary/80 transition-colors">
+                  ¿Olvidaste tu contraseña?
+                </button>
+              </div>
+            )}
 
             {/* Submit Button */}
             <Button
@@ -112,17 +192,36 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                "Iniciar Sesion"
+                authMode === 'login' ? "Iniciar Sesión" : "Crear Cuenta"
               )}
             </Button>
           </form>
 
           {/* Register Link */}
           <p className="text-center mt-6 text-sm text-muted-foreground">
-            Nuevo?{" "}
-            <button className="text-primary font-medium hover:text-primary/80 transition-colors">
-              Crea una cuenta
-            </button>
+            {authMode === 'login' ? (
+              <>
+                Nuevo?{" "}
+                <button
+                  type="button"
+                  onClick={() => setAuthMode('register')}
+                  className="text-primary font-medium hover:text-primary/80 transition-colors"
+                >
+                  Crea una cuenta
+                </button>
+              </>
+            ) : (
+              <>
+                Ya tienes cuenta?{" "}
+                <button
+                  type="button"
+                  onClick={() => setAuthMode('login')}
+                  className="text-primary font-medium hover:text-primary/80 transition-colors"
+                >
+                  Inicia sesión
+                </button>
+              </>
+            )}
           </p>
 
           {/* Divider */}
@@ -140,7 +239,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             type="button"
             variant="outline"
             className="w-full h-14 rounded-2xl border-border/50 hover:bg-secondary/50 transition-all"
-            onClick={onLogin}
+            onClick={googleLogin}
+            disabled={isLoading}
           >
             <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
               <path

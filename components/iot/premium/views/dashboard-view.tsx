@@ -5,7 +5,9 @@ import { AQIGauge } from "../aqi-gauge"
 import { StatCard } from "../stat-card"
 import { AlertCard } from "../alert-card"
 import { FABButton } from "../fab-button"
-import { 
+import { SensorCardTres } from "@/components/iot/sensor-card-tres"
+import { SensorAlerts } from "@/components/iot/sensor-alerts"
+import {
   Area, 
   AreaChart, 
   ResponsiveContainer, 
@@ -30,16 +32,18 @@ function generateChartData() {
     const time = new Date(now.getTime() - (11 - i) * 10 * 60 * 1000)
     return {
       time: time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
-      CO: 35 + Math.random() * 15,
-      CH4: 25 + Math.random() * 10,
-      COVs: 20 + Math.random() * 8
+      MQ4: 250 + Math.random() * 30,
+      MQ7: 200 + Math.random() * 40,
+      MQ135: 280 + Math.random() * 35
     }
   })
 }
 
 export function DashboardView({ data, onNavigateToAlerts, onNavigateToRecommendations }: DashboardViewProps) {
   const chartData = generateChartData()
-  const aqi = Math.round((data.mq7.value / 50 + data.mq4.value / 100) * 50)
+
+  // Calcular AQI basado en los 3 sensores
+  const aqi = Math.round(((data.mq4 || 0) / 50 + (data.mq7 || 0) / 100 + (data.mq135 || 0) / 75) * 50)
 
   return (
     <div className="pb-24">
@@ -57,6 +61,11 @@ export function DashboardView({ data, onNavigateToAlerts, onNavigateToRecommenda
           <h2 className="text-lg font-semibold mb-4 text-center">Indice de Calidad del Aire</h2>
           <AQIGauge value={aqi} />
         </div>
+      </div>
+
+      {/* Sensor Cards - 3 Sensores */}
+      <div className="p-4">
+        <SensorCardTres />
       </div>
 
       {/* Quick Stats Grid */}
@@ -107,17 +116,17 @@ export function DashboardView({ data, onNavigateToAlerts, onNavigateToRecommenda
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="colorCO" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0}/>
+                  <linearGradient id="colorMQ4" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
                   </linearGradient>
-                  <linearGradient id="colorCH4" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={0}/>
+                  <linearGradient id="colorMQ7" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/>
                   </linearGradient>
-                  <linearGradient id="colorCOVs" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={0}/>
+                  <linearGradient id="colorMQ135" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <XAxis 
@@ -130,7 +139,7 @@ export function DashboardView({ data, onNavigateToAlerts, onNavigateToRecommenda
                   axisLine={false} 
                   tickLine={false}
                   tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }}
-                  domain={[0, 60]}
+                  domain={[0, 350]}
                 />
                 <Tooltip 
                   contentStyle={{ 
@@ -149,26 +158,26 @@ export function DashboardView({ data, onNavigateToAlerts, onNavigateToRecommenda
                 />
                 <Area 
                   type="monotone" 
-                  dataKey="CO" 
-                  stroke="var(--chart-1)" 
+                  dataKey="MQ4" 
+                  stroke="#f97316" 
                   fillOpacity={1} 
-                  fill="url(#colorCO)"
+                  fill="url(#colorMQ4)"
                   strokeWidth={2}
                 />
                 <Area 
                   type="monotone" 
-                  dataKey="CH4" 
-                  stroke="var(--chart-2)" 
+                  dataKey="MQ7" 
+                  stroke="#0ea5e9" 
                   fillOpacity={1} 
-                  fill="url(#colorCH4)"
+                  fill="url(#colorMQ7)"
                   strokeWidth={2}
                 />
                 <Area 
                   type="monotone" 
-                  dataKey="COVs" 
-                  stroke="var(--chart-3)" 
+                  dataKey="MQ135" 
+                  stroke="#22c55e" 
                   fillOpacity={1} 
-                  fill="url(#colorCOVs)"
+                  fill="url(#colorMQ135)"
                   strokeWidth={2}
                 />
               </AreaChart>
@@ -179,38 +188,7 @@ export function DashboardView({ data, onNavigateToAlerts, onNavigateToRecommenda
 
       {/* Active Alerts Preview */}
       <div className="px-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold">Alertas Activas</h3>
-          <button 
-            onClick={onNavigateToAlerts}
-            className="text-sm text-primary font-medium hover:text-primary/80 transition-colors"
-          >
-            Ver todas
-          </button>
-        </div>
-        
-        <div className="space-y-3">
-          <AlertCard
-            id="1"
-            title="Nivel de CO elevado"
-            description="Ventile el area"
-            location="Detectado en cocina"
-            value="45 ppm"
-            time="Hace 5 minutos"
-            severity="moderada"
-            delay={400}
-          />
-          <AlertCard
-            id="2"
-            title="Humedad alta"
-            description="Revise ventilacion"
-            location="Bano principal"
-            value="78%"
-            time="Hace 15 minutos"
-            severity="baja"
-            delay={450}
-          />
-        </div>
+        <SensorAlerts onViewAll={onNavigateToAlerts} />
       </div>
 
       {/* FAB for AI Recommendations */}
