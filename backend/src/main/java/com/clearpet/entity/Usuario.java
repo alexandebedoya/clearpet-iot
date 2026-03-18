@@ -13,7 +13,8 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "\"Usuario\"") // Coincide con el nombre de Prisma (con comillas para evitar errores de
+                             // mayúsculas)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,10 +38,10 @@ public class Usuario implements UserDetails {
     @Builder.Default
     private String rol = "USER";
 
-    @Column(name = "google_id")
+    @Column(name = "google_id") // Si Prisma la creó así, déjala. Si falla, prueba "googleId"
     private String googleId;
 
-    @Column(name = "nombre_dispositivo")
+    @Column(name = "\"nombreDispositivo\"") // Ajustado a CamelCase para coincidir con tu \d "Usuario"
     private String nombreDispositivo;
 
     @Column(name = "reset_token")
@@ -58,16 +59,17 @@ public class Usuario implements UserDetails {
     private Boolean verificado = false;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "\"creadoEn\"", nullable = false, updatable = false) // Ajustado a nombre de Prisma
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "\"actualizadoEn\"") // Ajustado a nombre de Prisma
     private LocalDateTime updatedAt;
 
+    // --- Métodos de UserDetails ---
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + rol));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + rol.toUpperCase()));
     }
 
     @Override
@@ -82,7 +84,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return activo;
+        return activo != null && activo;
     }
 
     @Override
@@ -92,6 +94,6 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return activo;
+        return activo != null && activo;
     }
 }

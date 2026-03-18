@@ -3,9 +3,10 @@ spring:
     name: clearpet-backend
   
   datasource:
+    # URL para PostgreSQL (Puerto 5432)
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/clearpet_dev}
     username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:admin123}
+    password: ${DATABASE_PASSWORD:admin123} # <--- ASEGÚRATE QUE ESTA SEA TU CLAVE DE POSTGRES
     driver-class-name: org.postgresql.Driver
   
   jpa:
@@ -14,6 +15,7 @@ spring:
     show-sql: true
     properties:
       hibernate:
+        # Dialecto correcto para PostgreSQL
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         jdbc:
