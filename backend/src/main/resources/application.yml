@@ -3,10 +3,9 @@ spring:
     name: clearpet-backend
   
   datasource:
-    # URL para PostgreSQL (Puerto 5432)
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/clearpet_dev}
-    username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:admin123} # <--- ASEGÚRATE QUE ESTA SEA TU CLAVE DE POSTGRES
+    url: ${SPRING_DATASOURCE_URL:jdbc:${DATABASE_URL:postgresql://localhost:5432/clearpet_dev}}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:admin123}
     driver-class-name: org.postgresql.Driver
   
   jpa:
