@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "\"Usuario\"") // Coincide con el nombre de Prisma (con comillas para evitar errores de
+@Table(name = "\"usuario\"") // Coincide con el nombre de Prisma (con comillas para evitar errores de
                              // mayúsculas)
 @Data
 @NoArgsConstructor
