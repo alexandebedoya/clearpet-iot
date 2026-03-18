@@ -18,13 +18,18 @@ import {
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
-export function ProfileView() {
+// 1. Definimos la interfaz para que acepte la prop onLogout
+interface ProfileViewProps {
+  onLogout: () => void;
+}
+
+export function ProfileView({ onLogout }: ProfileViewProps) {
   const [notifications, setNotifications] = useState(true)
   const [criticalAlerts, setCriticalAlerts] = useState(true)
   const [soundEnabled, setSoundEnabled] = useState(false)
   
   return (
-    <div className="animate-fade-in-up space-y-4">
+    <div className="animate-fade-in-up space-y-4 pb-24">
       {/* Header */}
       <div className="flex items-center gap-2">
         <User className="h-5 w-5 text-primary" />
@@ -37,12 +42,12 @@ export function ProfileView() {
           <Avatar className="h-16 w-16">
             <AvatarImage src="/placeholder-avatar.jpg" />
             <AvatarFallback className="bg-primary/10 text-primary text-xl">
-              JD
+              AC
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <h3 className="font-semibold">Juan Desarrollador</h3>
-            <p className="text-sm text-muted-foreground">juan@ejemplo.com</p>
+            <h3 className="font-semibold">Alex Colimba</h3>
+            <p className="text-sm text-muted-foreground">alexis10129706@gmail.com</p>
             <span className="mt-1 inline-block rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
               Administrador
             </span>
@@ -134,8 +139,9 @@ export function ProfileView() {
         </CardContent>
       </Card>
       
-      {/* Logout Button */}
+      {/* Logout Button (Corregido con onClick) */}
       <Button 
+        onClick={() => onLogout()} 
         variant="outline" 
         className="w-full border-red-500/30 text-red-500 hover:bg-red-500/10 hover:text-red-500"
       >
@@ -145,13 +151,13 @@ export function ProfileView() {
       
       {/* Version */}
       <p className="text-center text-xs text-muted-foreground">
-        AirQuality Monitor v1.0.0
+        ClearPet Monitor v1.0.0
       </p>
     </div>
   )
 }
 
-function MenuItem({ icon: Icon, label }: { icon: typeof Settings, label: string }) {
+function MenuItem({ icon: Icon, label }: { icon: any, label: string }) {
   return (
     <button className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/50">
       <Icon className="h-4 w-4 text-muted-foreground" />

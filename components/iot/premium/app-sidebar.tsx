@@ -43,7 +43,6 @@ export function AppSidebar({ isOpen, onClose, currentView, onNavigate, onLogout 
 
   return (
     <>
-      {/* Backdrop */}
       <div 
         className={cn(
           "fixed inset-0 bg-foreground/20 backdrop-blur-sm z-50 transition-opacity duration-300",
@@ -52,7 +51,6 @@ export function AppSidebar({ isOpen, onClose, currentView, onNavigate, onLogout 
         onClick={onClose}
       />
       
-      {/* Sidebar */}
       <aside 
         className={cn(
           "fixed top-0 left-0 h-full w-72 bg-sidebar z-50 shadow-2xl",
@@ -60,7 +58,6 @@ export function AppSidebar({ isOpen, onClose, currentView, onNavigate, onLogout 
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        {/* Header */}
         <div className="relative h-36 bg-gradient-to-br from-primary to-primary/80 p-6">
           <Button
             variant="ghost"
@@ -77,13 +74,12 @@ export function AppSidebar({ isOpen, onClose, currentView, onNavigate, onLogout 
                 <Wind className="w-6 h-6 text-primary-foreground" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-primary-foreground">Monitoreo IoT</h2>
+                <h2 className="text-lg font-semibold text-primary-foreground">ClearPet IoT</h2>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Navigation */}
         <nav className="p-4 space-y-1">
           {menuItems.map((item, index) => {
             const Icon = item.icon
@@ -92,6 +88,7 @@ export function AppSidebar({ isOpen, onClose, currentView, onNavigate, onLogout 
             return (
               <button
                 key={item.id}
+                type="button"
                 onClick={() => handleNavigate(item.id)}
                 className={cn(
                   "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200",
@@ -109,14 +106,14 @@ export function AppSidebar({ isOpen, onClose, currentView, onNavigate, onLogout 
           })}
         </nav>
 
-        {/* Logout */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-sidebar-border">
           <button
-            onClick={onLogout}
+            type="button"
+            onClick={() => onLogout()}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive transition-all"
           >
             <LogOut className="w-5 h-5" />
-            <span>Cerrar Sesion</span>
+            <span>Cerrar Sesión</span>
           </button>
         </div>
       </aside>

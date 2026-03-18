@@ -134,7 +134,7 @@ export interface AuthContext {
   login: (email: string, password: string) => Promise<void>
   register: (data: RegisterRequest) => Promise<void>
   googleLogin: () => Promise<void>
-  logout: () => void
+  logout: () => void // Esta es la función que daba el error si no se llamaba igual en use-auth.ts
 }
 
 // ======================== API RESPONSES ========================

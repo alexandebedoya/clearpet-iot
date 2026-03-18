@@ -27,7 +27,7 @@ export function useAuth(): AuthContext {
         }
       } catch (error) {
         console.error('[AUTH] Error cargando auth desde storage:', error)
-        limpiar()
+        logout() // Cambiado de limpiar() a logout()
       } finally {
         setIsLoading(false)
       }
@@ -67,7 +67,7 @@ export function useAuth(): AuthContext {
       } catch (error) {
         const mensaje = error instanceof Error ? error.message : 'Error desconocido'
         console.error('[AUTH] Error en login:', mensaje)
-        limpiar()
+        logout() // Cambiado de limpiar() a logout()
         throw error
       } finally {
         setIsLoading(false)
@@ -82,7 +82,6 @@ export function useAuth(): AuthContext {
       try {
         setIsLoading(true)
 
-        // Validaciones básicas en client
         if (data.password !== data.confirmPassword) {
           throw new Error('Las contraseñas no coinciden')
         }
@@ -104,7 +103,6 @@ export function useAuth(): AuthContext {
 
         const responseData = await response.json()
 
-        // Auto-login después de registro
         setToken(responseData.data.token)
         setUsuario(responseData.data.usuario)
         setIsAutenticado(true)
@@ -116,7 +114,7 @@ export function useAuth(): AuthContext {
       } catch (error) {
         const mensaje = error instanceof Error ? error.message : 'Error desconocido'
         console.error('[AUTH] Error en registro:', mensaje)
-        limpiar()
+        logout() // Cambiado de limpiar() a logout()
         throw error
       } finally {
         setIsLoading(false)
@@ -129,8 +127,6 @@ export function useAuth(): AuthContext {
   const googleLogin = useCallback(async () => {
     try {
       setIsLoading(true)
-
-      // Redirigir a Google OAuth
       window.location.href = getApiUrl('/api/auth/google')
     } catch (error) {
       const mensaje = error instanceof Error ? error.message : 'Error desconocido'
@@ -140,14 +136,15 @@ export function useAuth(): AuthContext {
     }
   }, [])
 
-  // ======================== LIMPIAR STATE ========================
-  const limpiar = () => {
+  // ======================== LOGOUT (Antes se llamaba limpiar) ========================
+  const logout = useCallback(() => {
     setToken(null)
     setUsuario(null)
     setIsAutenticado(false)
     localStorage.removeItem('auth_token')
     localStorage.removeItem('auth_usuario')
-  }
+    console.log('[AUTH] 🚪 Sesión cerrada')
+  }, [])
 
   return {
     usuario,
@@ -157,12 +154,12 @@ export function useAuth(): AuthContext {
     login,
     register,
     googleLogin,
-    logout,
+    logout, // Ahora sí existe esta variable para retornar
   }
 }
 
 /**
- * Hook para obtener token (para llamadas a API protegidas)
+ * Hook para obtener token
  */
 export function useAuthToken(): string | null {
   const [token, setToken] = useState<string | null>(null)

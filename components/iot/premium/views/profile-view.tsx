@@ -16,17 +16,22 @@ import {
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-export function ProfileView() {
+// 1. Definimos la interfaz para recibir la acción de logout
+interface ProfileViewProps {
+  onLogout: () => void;
+}
+
+export function ProfileView({ onLogout }: ProfileViewProps) {
   const [darkMode, setDarkMode] = useState(false)
-  const [language, setLanguage] = useState("Espanol")
-  const [units, setUnits] = useState("Metrico")
+  const [language, setLanguage] = useState("Español")
+  const [units, setUnits] = useState("Métrico")
   const [housingType, setHousingType] = useState("Casa")
 
   return (
     <div className="pb-24">
       {/* Header */}
       <div className="p-4 pb-0">
-        <h1 className="text-2xl font-bold tracking-tight">Perfil y Configuracion</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Perfil y Configuración</h1>
       </div>
 
       {/* User Card */}
@@ -35,11 +40,11 @@ export function ProfileView() {
           <div className="flex items-center gap-4">
             <div className="relative">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-2xl font-bold text-white">
-                a
+                A
               </div>
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="font-semibold text-lg">alex colimba</h2>
+              <h2 className="font-semibold text-lg uppercase">alex colimba</h2>
               <p className="text-sm text-muted-foreground truncate">alexis10129706@gmail.com</p>
             </div>
             <Button variant="ghost" size="icon" className="rounded-xl">
@@ -51,7 +56,7 @@ export function ProfileView() {
 
       {/* Home Configuration */}
       <div className="px-4">
-        <h2 className="font-semibold text-lg mb-3">Configuracion del Hogar</h2>
+        <h2 className="font-semibold text-lg mb-3">Configuración del Hogar</h2>
         <div className="bg-card rounded-2xl border border-border/50 overflow-hidden animate-fade-in-up" style={{ animationDelay: '100ms' }}>
           <div className="flex items-center justify-between p-4 border-b border-border/30">
             <div className="flex items-center gap-3">
@@ -88,7 +93,6 @@ export function ProfileView() {
       <div className="p-4">
         <h2 className="font-semibold text-lg mb-3">Preferencias</h2>
         <div className="bg-card rounded-2xl border border-border/50 overflow-hidden animate-fade-in-up" style={{ animationDelay: '150ms' }}>
-          {/* Dark Mode Toggle */}
           <div className="flex items-center justify-between p-4 border-b border-border/30">
             <div className="flex items-center gap-3">
               <Moon className="w-5 h-5 text-muted-foreground" />
@@ -110,7 +114,6 @@ export function ProfileView() {
             </button>
           </div>
           
-          {/* Language */}
           <div className="flex items-center justify-between p-4 border-b border-border/30">
             <div className="flex items-center gap-3">
               <Globe className="w-5 h-5 text-muted-foreground" />
@@ -122,7 +125,6 @@ export function ProfileView() {
             </div>
           </div>
           
-          {/* Units */}
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
               <Ruler className="w-5 h-5 text-muted-foreground" />
@@ -136,14 +138,15 @@ export function ProfileView() {
         </div>
       </div>
 
-      {/* Logout Button */}
+      {/* Logout Button (Corregido) */}
       <div className="px-4 pt-4">
         <Button 
+          onClick={() => onLogout()} // 2. Vinculamos la función correctamente
           variant="outline" 
           className="w-full h-12 rounded-2xl border-status-danger/30 text-status-danger hover:bg-status-danger/10 hover:text-status-danger"
         >
           <LogOut className="w-4 h-4 mr-2" />
-          Cerrar Sesion
+          Cerrar Sesión
         </Button>
       </div>
     </div>
