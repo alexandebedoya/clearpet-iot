@@ -2,6 +2,7 @@
  * GET /api/sensores/ultima
  * Obtener última lectura de sensores del usuario
  */
+export const dynamic = 'force-static';
 
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
