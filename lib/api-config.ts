@@ -22,7 +22,7 @@ export function getApiBaseUrl(): string {
 }
 
 export function getApiUrl(endpoint: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
   return `${baseUrl}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
 }
 // Borra cualquier otro "return" que haya quedado suelto abajo

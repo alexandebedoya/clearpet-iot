@@ -1,11 +1,27 @@
-import { generateCurrentReading } from '@/lib/sensor-service'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { getApiUrl } from '@/lib/api-config'
 
-export async function GET() {
-  // Simulate API latency
-  await new Promise(resolve => setTimeout(resolve, 100))
-  
-  const data = generateCurrentReading()
-  
-  return NextResponse.json(data)
+export const dynamic = 'force-static'; // <--- AGREGA SOLO ESTO
+
+export async function GET(req: NextRequest) {
+  try {
+    const authHeader = req.headers.get('authorization')
+
+    const response = await fetch(getApiUrl('/api/sensores/latest'), {
+      method: 'GET',
+      headers: {
+        'Authorization': authHeader || '',
+      },
+    })
+
+    const data = await response.json()
+
+    return NextResponse.json(data, { status: response.status })
+  } catch (error) {
+    console.error('[SENSORES] Error obteniendo datos:', error)
+    return NextResponse.json(
+      { error: 'Error obteniendo datos de sensores' },
+      { status: 500 }
+    )
+  }
 }
