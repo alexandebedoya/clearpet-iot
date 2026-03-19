@@ -99,3 +99,35 @@ app/src/main/assets/public
 app/src/main/assets/capacitor.config.json
 app/src/main/assets/capacitor.plugins.json
 app/src/main/res/xml/config.xml
+
+
+# === BIO-SENSE IOT: BACKEND ADDITIONS ===
+
+# Spring Boot & Maven
+target/
+*.jar
+*.war
+*.ear
+/logs/
+.mvn/wrapper/maven-wrapper.jar
+
+# Secretos y Configuración Local
+.env
+.env.local
+application-dev.yml
+application-local.yml
+auth_config.json
+client_secret_*.json
+
+# IDEs adicionales (VS Code)
+.vscode/
+.factorypath
+.project
+.settings/
+.classpath
+
+# Node.js (Frontend / Capacitor root)
+node_modules/
+dist/
+.next/
+.serverless/

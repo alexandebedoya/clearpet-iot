@@ -6,13 +6,13 @@ CREATE TABLE IF NOT EXISTS usuario (
     rol VARCHAR(50) NOT NULL DEFAULT 'USER',
     google_id VARCHAR(255) UNIQUE,
     foto_url VARCHAR(1024),
-    "nombreDispositivo" VARCHAR(255),
+    nombre_dispositivo VARCHAR(255), -- Cambiado a snake_case
     reset_token VARCHAR(255),
     reset_token_expiration TIMESTAMP,
     activo BOOLEAN NOT NULL DEFAULT TRUE,
     verificado BOOLEAN NOT NULL DEFAULT FALSE,
-    "creadoEn" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    "actualizadoEn" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Cambiado a snake_case
+    actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Cambiado a snake_case
 );
 
 CREATE TABLE IF NOT EXISTS sensor_datos (
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS sensor_datos (
     timestamp TIMESTAMP NOT NULL,
     aqi INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
+    CONSTRAINT fk_usuario_datos FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS sesiones_usuario (
@@ -35,5 +35,5 @@ CREATE TABLE IF NOT EXISTS sesiones_usuario (
     expiracion TIMESTAMP NOT NULL,
     activo BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
+    CONSTRAINT fk_usuario_sesion FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 );
