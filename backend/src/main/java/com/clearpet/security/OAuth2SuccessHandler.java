@@ -37,22 +37,29 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
         String googleId = oAuth2User.getAttribute("sub");
+        String picture = oAuth2User.getAttribute("picture");
 
         log.info("[OAUTH2] Login exitoso con Google: {}", email);
 
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .map(u -> {
+                    boolean modified = false;
                     if (u.getGoogleId() == null) {
                         u.setGoogleId(googleId);
-                        return usuarioRepository.save(u);
+                        modified = true;
                     }
-                    return u;
+                    if (picture != null && !picture.equals(u.getFotoUrl())) {
+                        u.setFotoUrl(picture);
+                        modified = true;
+                    }
+                    return modified ? usuarioRepository.save(u) : u;
                 })
                 .orElseGet(() -> {
                     Usuario newUser = Usuario.builder()
                             .email(email)
                             .nombre(name != null ? name : email.split("@")[0])
                             .googleId(googleId)
+                            .fotoUrl(picture)
                             .password("") 
                             .rol("USER")
                             .activo(true)
@@ -67,6 +74,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .queryParam("token", token)
                 .build().toUriString();
 
+        log.info("[OAUTH2] Redirigiendo a: {}", targetUrl);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }

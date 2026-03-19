@@ -21,19 +21,22 @@ spring:
           batch_size: 10
         order_inserts: true
         order_updates: true
+# Google OAuth2 Configuration
+security:
+  oauth2:
+    client:
+      registration:
+        google:
+          client-id: ${GOOGLE_CLIENT_ID:669903110693-t5jtvf2tqk7jvn58vbjfa0r5me1euiri.apps.googleusercontent.com}
+          client-secret: ${GOOGLE_CLIENT_SECRET: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}
+          scope:
+            - email
+            - profile
+      provider:
+        google:
+          user-name-attribute: email
 
-  # Google OAuth2 Configuration
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID:your-google-client-id}
-            client-secret: ${GOOGLE_CLIENT_SECRET:your-google-client-secret}
-            scope:
-              - email
-              - profile
-
+servlet:
   # Mail Configuration for Password Recovery
   mail:
     host: smtp.gmail.com

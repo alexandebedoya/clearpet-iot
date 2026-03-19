@@ -37,44 +37,35 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // 1. Deshabilitar CSRF para APIs REST
                 .csrf(csrf -> csrf.disable())
-
-                // 2. Configuración de CORS para Railway/Next.js
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-                // 3. Política Stateless (No se guarda sesión en el servidor)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // 4. Autorización de rutas
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/oauth2/**").permitAll()
-                        .requestMatchers("/api/sensores/latest").permitAll() // Público para el dashboard inicial
+                        .requestMatchers("/api/auth/**", "/login/**", "/oauth2/**").permitAll()
+                        .requestMatchers("/api/sensores/latest").permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated())
-
-                // 5. Configuración de Google Login
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oauth2SuccessHandler))
-
-                // 6. Filtro JWT antes del filtro de usuario/contraseña
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // Bean mejorado para el AuthenticationManager
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // Configuración de CORS fundamental para el despliegue
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Agrega aquí tu URL de Railway de Next.js cuando la tengas
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://biosense-frontend.up.railway.app"));
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:3000", 
+            "http://localhost:8080",
+            "https://clearpet-iot-production.up.railway.app",
+            "https://biosense-frontend.up.railway.app"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);

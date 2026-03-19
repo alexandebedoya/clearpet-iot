@@ -38,11 +38,13 @@ public class Usuario implements UserDetails {
     @Builder.Default
     private String rol = "USER";
 
-    @Column(name = "google_id") // Si Prisma la creó así, déjala. Si falla, prueba "googleId"
+    @Column(name = "google_id")
     private String googleId;
 
-    @Column(name = "\"nombreDispositivo\"") // Ajustado a CamelCase para coincidir con tu \d "Usuario"
-    private String nombreDispositivo;
+    @Column(name = "foto_url")
+    private String fotoUrl;
+
+    @Column(name = "\"nombreDispositivo\"")
 
     @Column(name = "reset_token")
     private String resetToken;
