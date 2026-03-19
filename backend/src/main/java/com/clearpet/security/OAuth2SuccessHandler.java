@@ -2,6 +2,7 @@ package com.clearpet.security;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -10,7 +11,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.clearpet.entity.Usuario;
 import com.clearpet.repository.UsuarioRepository;
-import com.clearpet.service.UsuarioService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final JwtTokenProvider tokenProvider;
     private final UsuarioRepository usuarioRepository;
-    private final UsuarioService usuarioService;
+
+    @Value("${app.oauth2.redirect-uri:http://localhost:3000/oauth/callback}")
+    private String redirectUri;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -47,12 +49,11 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     return u;
                 })
                 .orElseGet(() -> {
-                    // Crear nuevo usuario si no existe
                     Usuario newUser = Usuario.builder()
                             .email(email)
-                            .nombre(name)
+                            .nombre(name != null ? name : email.split("@")[0])
                             .googleId(googleId)
-                            .password("") // No password for OAuth2 users
+                            .password("") 
                             .rol("USER")
                             .activo(true)
                             .verificado(true)
@@ -62,7 +63,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String token = tokenProvider.generateToken(usuario);
 
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/oauth/callback")
+        String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
                 .queryParam("token", token)
                 .build().toUriString();
 
