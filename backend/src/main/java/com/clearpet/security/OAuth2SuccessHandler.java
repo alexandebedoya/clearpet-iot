@@ -26,7 +26,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final JwtTokenProvider tokenProvider;
     private final UsuarioService usuarioService;
 
-    @Value("${app.oauth2.redirect-uri:http://localhost:3000/oauth/callback}")
+    // URL de éxito en producción para el flujo móvil/web
+    @Value("${app.oauth2.redirect-uri:https://clearpet-iot-production.up.railway.app/api/auth/success}")
     private String redirectUri;
 
     @Override
@@ -41,17 +42,18 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         log.info("[OAUTH2] Login exitoso con Google: {}", email);
 
-        // Delegamos la persistencia atómica al servicio
+        // Persistencia atómica
         Usuario usuario = usuarioService.processOAuthPostLogin(email, name, googleId, picture);
 
-        // Generamos el token JWT una vez el usuario está persistido
+        // Generación de JWT
         String token = tokenProvider.generateToken(usuario);
 
+        // Redirigir al endpoint de éxito que mostrará el JSON
         String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
                 .queryParam("token", token)
                 .build().toUriString();
 
-        log.info("[OAUTH2] Redirigiendo a: {}", targetUrl);
+        log.info("[OAUTH2] Redirigiendo a endpoint de éxito: {}", targetUrl);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }

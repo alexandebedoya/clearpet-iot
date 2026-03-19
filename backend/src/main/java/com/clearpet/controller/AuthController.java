@@ -2,6 +2,7 @@ package com.clearpet.controller;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clearpet.dto.AuthResponse;
@@ -29,11 +31,25 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:3001" })
+@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:3001", "https://clearpet-iot-production.up.railway.app" })
 public class AuthController {
 
     private final AuthService authService;
     private final UsuarioService usuarioService;
+
+    /**
+     * Endpoint de éxito para OAuth2
+     * Devuelve un JSON con el token para que la App móvil lo capture fácilmente.
+     */
+    @GetMapping("/success")
+    public ResponseEntity<Map<String, Object>> authSuccess(@RequestParam("token") String token) {
+        log.info("[AUTH_CONTROLLER] Login con Google exitoso, devolviendo JSON de éxito");
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Autenticación Exitosa con Google");
+        response.put("token", token);
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
@@ -113,10 +129,5 @@ public class AuthController {
                             .message(e.getMessage())
                             .build());
         }
-    }}
-
-    
-    
-        
-        
-    
+    }
+}

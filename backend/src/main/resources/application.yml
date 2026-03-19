@@ -32,7 +32,7 @@ spring:
             scope:
               - email
               - profile
-            redirect-uri: https://clearpet-iot-production.up.railway.app/login/oauth2/code/google
+            redirect-uri: "https://clearpet-iot-production.up.railway.app/api/auth/success"
         provider:
           google:
             user-name-attribute: email
