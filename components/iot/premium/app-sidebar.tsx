@@ -74,7 +74,7 @@ export function AppSidebar({ isOpen, onClose, currentView, onNavigate, onLogout 
                 <Wind className="w-6 h-6 text-primary-foreground" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-primary-foreground">ClearPet IoT</h2>
+                <h2 className="text-lg font-semibold text-primary-foreground">BioSense IOT IoT</h2>
               </div>
             </div>
           </div>

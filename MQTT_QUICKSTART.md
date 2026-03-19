@@ -18,7 +18,7 @@
    - Abre: `arduino_sketch.ino`
    - Línea 7: `WIFI_SSID = "Sala_sistemas"`
    - Línea 8: `WIFI_PASSWORD = "*fKw8&97/"`
-   - Line 11: `MQTT_CLIENT_ID = "ESP32_CLEARPET"` (cualquier nombre)
+   - Line 11: `MQTT_CLIENT_ID = "ESP32_BioSense IOT"` (cualquier nombre)
 
 4. **Carga en ESP32:**
    - Tools > Board > ESP32
@@ -41,7 +41,7 @@
 ### 2.1 Instalar dependencias
 
 ```bash
-cd c:\Users\alexi\Desktop\ClearPet1
+cd c:\Users\alexi\Desktop\BioSense IOT1
 npm install mqtt
 ```
 
@@ -58,7 +58,7 @@ Abre: http://localhost:3000
 Abre consola (F12) y busca logs:
 ```
 [MQTT] ✅ Conectado al broker
-[MQTT] Suscrito a: clearpet/sensores/datos
+[MQTT] Suscrito a: BioSense IOT/sensores/datos
 [MQTT] Datos recibidos: {mq4: 245, mq7: 310...}
 ```
 
@@ -94,7 +94,7 @@ export default function TestPage() {
 
 1. Abre: https://www.hivemq.com/demos/websocket-client/
 2. Conecta a: `broker.hivemq.com:8884`
-3. Suscribete a: `clearpet/sensores/datos`
+3. Suscribete a: `BioSense IOT/sensores/datos`
 4. Deberías ver mensajes JSON cada 2 segundos
 
 ---
@@ -168,7 +168,7 @@ publishCommand('LED_OFF')  // Apaga LED
    ↓
 3. Se conecta a broker MQTT (broker.hivemq.com)
    ↓
-4. Publica JSON en: clearpet/sensores/datos
+4. Publica JSON en: BioSense IOT/sensores/datos
    ↓
 5. App web (Next.js) se suscribe al tópico
    ↓
@@ -178,7 +178,7 @@ publishCommand('LED_OFF')  // Apaga LED
    ↓
 8. Usuario puede enviar comandos (LED ON/OFF)
    ↓
-9. ESP32 recibe comandos en: clearpet/control/comando
+9. ESP32 recibe comandos en: BioSense IOT/control/comando
 ```
 
 ---

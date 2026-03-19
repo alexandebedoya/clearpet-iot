@@ -15,12 +15,12 @@ export const MQTT_CONFIG = {
   
   // Tópicos (deben coincidir con Arduino)
   topics: {
-    sensores: 'clearpet/sensores/datos',        // Recibe datos del ESP32 (todos los sensores)
-    mq4: 'clearpet/sensores/mq4',               // Datos individuales MQ4 (opcional)
-    mq7: 'clearpet/sensores/mq7',               // Datos individuales MQ7 (opcional)
-    mq135: 'clearpet/sensores/mq135',           // Datos individuales MQ135 (opcional)
-    control: 'clearpet/control/comando',        // Envía comandos al ESP32
-    conexion: 'clearpet/conexion/estado',       // Estado de conexión
+    sensores: 'BioSense IOT/sensores/datos',        // Recibe datos del ESP32 (todos los sensores)
+    mq4: 'BioSense IOT/sensores/mq4',               // Datos individuales MQ4 (opcional)
+    mq7: 'BioSense IOT/sensores/mq7',               // Datos individuales MQ7 (opcional)
+    mq135: 'BioSense IOT/sensores/mq135',           // Datos individuales MQ135 (opcional)
+    control: 'BioSense IOT/control/comando',        // Envía comandos al ESP32
+    conexion: 'BioSense IOT/conexion/estado',       // Estado de conexión
   },
   
   // Opciones MQTT

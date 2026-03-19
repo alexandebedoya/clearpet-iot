@@ -78,7 +78,7 @@ export default function AirQualityApp() {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader title={isLoading ? "Cargando..." : `ClearPet (${dataSource})`} onMenuClick={() => setSidebarOpen(true)} notificationCount={3} />
+      <AppHeader title={isLoading ? "Cargando..." : `BioSense IOT (${dataSource})`} onMenuClick={() => setSidebarOpen(true)} notificationCount={3} />
       <AppSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} currentView={currentView} onNavigate={setCurrentView} onLogout={handleLogout} />
       <main className="min-h-[calc(100vh-4rem)] max-w-lg mx-auto">{renderView()}</main>
       <BottomNavigation currentView={currentView} onNavigate={setCurrentView} alertCount={3} />

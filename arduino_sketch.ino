@@ -17,11 +17,11 @@ const char* MQTT_SERVER = "broker.hivemq.com";   // Broker público gratis
 const int MQTT_PORT = 1883;
 const char* MQTT_USER = "";                      // Vacío para HiveMQ
 const char* MQTT_PASSWORD = "";                  // Vacío para HiveMQ
-const char* MQTT_CLIENT_ID = "ESP32_CLEARPET_001"; // ID único del dispositivo
+const char* MQTT_CLIENT_ID = "ESP32_BIOSENSE_001"; // ID único del dispositivo
 
 // ======================== TÓPICOS MQTT ========================
-const char* MQTT_TOPIC_PUBLISH = "clearpet/sensores/datos";    // Publica sensores
-const char* MQTT_TOPIC_SUBSCRIBE = "clearpet/control/comando"; // Recibe comandos
+const char* MQTT_TOPIC_PUBLISH = "biosense-iot/sensores/datos";    // Publica sensores
+const char* MQTT_TOPIC_SUBSCRIBE = "biosense-iot/control/comando"; // Recibe comandos
 
 // ======================== PINES SENSORES (ANALÓGICO) ========================
 #define MQ4_PIN 35    // Gas combustible

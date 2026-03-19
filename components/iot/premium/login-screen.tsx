@@ -76,7 +76,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               </div>
             </div>
             <h1 className="text-2xl font-semibold text-foreground tracking-tight text-balance text-center">
-              ClearPet Monitor IoT
+              BioSense IOT Monitor IoT
             </h1>
             <p className="text-muted-foreground mt-2 text-sm text-center">
               Calidad del aire en tiempo real para tu hogar

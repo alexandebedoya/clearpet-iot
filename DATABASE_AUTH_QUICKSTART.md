@@ -75,7 +75,7 @@ psql -U postgres
 ### Crear BD
 
 ```sql
-CREATE DATABASE clearpet_dev;
+CREATE DATABASE BioSense IOT_dev;
 \q  -- Salir
 ```
 
@@ -86,7 +86,7 @@ CREATE DATABASE clearpet_dev;
 Ya actualizado automáticamente, pero verifica:
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/clearpet_dev"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/BioSense IOT_dev"
 JWT_SECRET=cambia_esto_algo_seguro_1234567890
 JWT_EXPIRES_IN=7d
 ```
@@ -98,7 +98,7 @@ JWT_EXPIRES_IN=7d
 ### Crear tablas en BD
 
 ```bash
-cd c:\Users\alexi\Desktop\ClearPet1
+cd c:\Users\alexi\Desktop\BioSense IOT1
 
 # Ejecutar migrations
 npx prisma migrate dev --name init
@@ -262,7 +262,7 @@ async function cargarSensores() {
 ## ✅ Checklist
 
 - [ ] PostgreSQL instalado (`psql --version` funciona)
-- [ ] Base de datos `clearpet_dev` creada
+- [ ] Base de datos `BioSense IOT_dev` creada
 - [ ] `.env.local` tiene `DATABASE_URL`
 - [ ] `npx prisma migrate dev --name init` ejecutado exitosamente
 - [ ] Endpoint `/api/auth/register` responde
@@ -283,12 +283,12 @@ async function cargarSensores() {
    
 2. **Login:** admin@pgadmin.org / admin
 
-3. **Ver tablas:** Servers > PostgreSQL > clearpet_dev
+3. **Ver tablas:** Servers > PostgreSQL > BioSense IOT_dev
 
 ### Terminal
 
 ```bash
-psql -U postgres -d clearpet_dev
+psql -U postgres -d BioSense IOT_dev
 
 # Ver tablas
 \dt
@@ -308,7 +308,7 @@ SELECT id, email, nombre, rol FROM "Usuario";
 |----------|----------|
 | `ECONNREFUSED` | PostgreSQL no está corriendo (inicia el servicio) |
 | `password authentication failed` | Contraseña en .env.local es incorrecta |
-| `database "clearpet_dev" does not exist` | Crear con SQL de arriba |
+| `database "BioSense IOT_dev" does not exist` | Crear con SQL de arriba |
 | Prisma error | `npm install` y `npx prisma generate` |
 | Token expirado | Logout y login nuevamente |
 
@@ -332,7 +332,7 @@ Una vez funcionando:
 ```bash
 # 1. PostgreSQL ya debería estar instalado
 # 2. Crear BD:
-CREATE DATABASE clearpet_dev;
+CREATE DATABASE BioSense IOT_dev;
 
 # 3. Verificar .env.local
 cat .env.local

@@ -15,7 +15,7 @@ export function SensorsView() {
         <Card className="p-8 border-dashed">
           <div className="flex flex-col items-center gap-3 text-muted-foreground">
             <Loader2 className="w-8 h-8 animate-spin" />
-            <p>Cargando sensores de ClearPet...</p>
+            <p>Cargando sensores de BioSense IOT...</p>
           </div>
         </Card>
       </div>
@@ -40,7 +40,7 @@ export function SensorsView() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight">Detalle de Sensores</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Información de dispositivos ClearPet en tiempo real.
+          Información de dispositivos BioSense IOT en tiempo real.
         </p>
       </div>
 

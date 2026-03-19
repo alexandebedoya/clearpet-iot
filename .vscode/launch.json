@@ -2,11 +2,11 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Spring Boot-ClearPetApplication<clearpet-backend>",
+            "name": "Spring Boot-BioSense IOTApplication<BioSense IOT-backend>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "mainClass": "com.clearpet.ClearPetApplication",
-            "projectName": "clearpet-backend",
+            "mainClass": "com.biosense.BioSense IOTApplication",
+            "projectName": "BioSense IOT-backend",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }

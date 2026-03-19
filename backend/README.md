@@ -1,6 +1,6 @@
-# ClearPet Backend - Spring Boot
+# BioSense IOT Backend - Spring Boot
 
-Backend REST API para el sistema IoT ClearPet, construido con Spring Boot 3.x, Spring Security, JPA y MySQL.
+Backend REST API para el sistema IoT BioSense IOT, construido con Spring Boot 3.x, Spring Security, JPA y MySQL.
 
 ## 📋 Requisitos Previos
 
@@ -35,8 +35,8 @@ mysql -u Sala_sistemas -p
 # Contraseña: *fKw8&97/
 
 # Crear la base de datos
-CREATE DATABASE clearpet;
-GRANT ALL PRIVILEGES ON clearpet.* TO 'Sala_sistemas'@'localhost';
+CREATE DATABASE BioSense IOT;
+GRANT ALL PRIVILEGES ON BioSense IOT.* TO 'Sala_sistemas'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
 ```
@@ -63,7 +63,7 @@ mvn spring-boot:run
 # Compilar a JAR
 mvn clean package
 # Ejecutar JAR
-java -jar target/clearpet-backend-1.0.0.jar
+java -jar target/BioSense IOT-backend-1.0.0.jar
 ```
 
 ### Opción 1.5: Desarrollo con H2 Database (Sin MySQL)
@@ -73,7 +73,7 @@ Si tienes problemas instalando MySQL, puedes usar H2 Database para desarrollo:
 1. El proyecto ya está configurado para usar H2
 2. Simplemente ejecuta: `mvn spring-boot:run`
 3. Accede a la consola H2 en: http://localhost:8080/h2-console
-   - **JDBC URL:** `jdbc:h2:mem:clearpet`
+   - **JDBC URL:** `jdbc:h2:mem:BioSense IOT`
    - **User:** `sa`
    - **Password:** (vacío)
 
@@ -81,7 +81,7 @@ Si tienes problemas instalando MySQL, puedes usar H2 Database para desarrollo:
 
 1. Abrir el proyecto en tu IDE
 2. Configurar el JDK a Java 21
-3. Click derecho en `ClearPetApplication.java`
+3. Click derecho en `BioSense IOTApplication.java`
 4. Ejecutar como aplicación Java
 
 ## 📡 Endpoints API
@@ -163,8 +163,8 @@ backend/
 ├── README.md
 └── src/
     ├── main/
-    │   ├── java/com/clearpet/
-    │   │   ├── ClearPetApplication.java (Clase principal)
+    │   ├── java/com.biosense/
+    │   │   ├── BioSense IOTApplication.java (Clase principal)
     │   │   ├── config/ (Configuraciones)
     │   │   │   └── SecurityConfig.java
     │   │   ├── controller/ (Controladores REST)
@@ -196,7 +196,7 @@ backend/
     │   └── resources/
     │       └── application.yml (Configuración)
     └── test/
-        └── java/com/clearpet/
+        └── java/com.biosense/
 ```
 
 ## 🔧 Tecnologías
@@ -278,11 +278,11 @@ kill -9 <PID>
 
 ## 📄 Licencia
 
-Este proyecto es parte de ClearPet IoT System.
+Este proyecto es parte de BioSense IOT IoT System.
 
 ## 👤 Autor
 
-Desarrollado para ClearPet.
+Desarrollado para BioSense IOT.
 
 ---
 

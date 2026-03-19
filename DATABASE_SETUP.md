@@ -25,9 +25,9 @@
 Si tienes Docker:
 
 ```bash
-docker run --name postgres-clearpet \
+docker run --name postgres-BioSense IOT \
   -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=clearpet_dev \
+  -e POSTGRES_DB=BioSense IOT_dev \
   -p 5432:5432 \
   -d postgres:16
 ```
@@ -49,13 +49,13 @@ psql -U postgres
 ```sql
 -- Conectarse como postgres (ya está)
 -- Crear base de datos
-CREATE DATABASE clearpet_dev;
+CREATE DATABASE BioSense IOT_dev;
 
 -- Crear usuario (opcional, más seguro)
-CREATE USER clearpet WITH PASSWORD 'clearpet_password_123';
+CREATE USER BioSense IOT WITH PASSWORD 'BioSense IOT_password_123';
 
 -- Otorgar permisos
-GRANT ALL PRIVILEGES ON DATABASE clearpet_dev TO clearpet;
+GRANT ALL PRIVILEGES ON DATABASE BioSense IOT_dev TO BioSense IOT;
 
 -- Ver bases de datos creadas
 \l
@@ -72,10 +72,10 @@ En tu archivo `.env.local`:
 
 ```env
 # Opción 1: Usuario postgres (por defecto)
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/clearpet_dev"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/BioSense IOT_dev"
 
 # Opción 2: Usuario específico (más seguro)
-DATABASE_URL="postgresql://clearpet:clearpet_password_123@localhost:5432/clearpet_dev"
+DATABASE_URL="postgresql://BioSense IOT:BioSense IOT_password_123@localhost:5432/BioSense IOT_dev"
 
 # Opción 3: En Vercel Postgres (url secreta)
 DATABASE_URL="postgresql://[usuario]:[password]@[host]:[puerto]/[db]?sslmode=require"
@@ -101,14 +101,14 @@ Esto:
 
 1. Abre pgAdmin: http://localhost:5050
 2. Login: admin@pgadmin.org / admin
-3. En el árbol: Servers > PostgreSQL > Bases de datos > clearpet_dev
+3. En el árbol: Servers > PostgreSQL > Bases de datos > BioSense IOT_dev
 4. Ve todas las tablas creadas
 
 ### 3. Ver datos en terminal
 
 ```bash
 # Conectarse a la BD
-psql -U postgres -d clearpet_dev
+psql -U postgres -d BioSense IOT_dev
 
 # Ver tablas
 \dt
@@ -134,8 +134,8 @@ SELECT * FROM "Usuario";
 npx prisma migrate reset
 
 # Opción 2: Borrar base de datos y recrear
-psql -U postgres -c "DROP DATABASE clearpet_dev;"
-psql -U postgres -c "CREATE DATABASE clearpet_dev;"
+psql -U postgres -c "DROP DATABASE BioSense IOT_dev;"
+psql -U postgres -c "CREATE DATABASE BioSense IOT_dev;"
 npx prisma migrate dev --name init
 ```
 
@@ -152,7 +152,7 @@ npx prisma migrate dev --name init
 - Revisar: https://www.postgresql.org/docs/current/libpq-envvar.html
 
 ### "database does not exist"
-- ✅ `clearpet_dev` no fue creada
+- ✅ `BioSense IOT_dev` no fue creada
 - Solución: Crear con SQL de arriba
 
 ### Prisma no ve los cambios
@@ -189,7 +189,7 @@ npx prisma migrate dev --name [nombre-cambio]
 ```
 1. Instalar PostgreSQL
    ↓
-2. Crear base de datos "clearpet_dev"
+2. Crear base de datos "BioSense IOT_dev"
    ↓
 3. Configurar .env.local con DATABASE_URL
    ↓

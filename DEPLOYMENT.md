@@ -1,4 +1,4 @@
-# 🌍 Monitoreo Ambiental IoT - ClearPet
+# 🌍 Monitoreo Ambiental IoT - BioSense IOT
 
 Aplicación web IoT para monitoreo de calidad de aire y alertas ambientales.
 
@@ -13,7 +13,7 @@ Aplicación web IoT para monitoreo de calidad de aire y alertas ambientales.
 
 2. **Carga el código en GitHub**:
    - Ve a https://github.com/new
-   - Crea un nuevo repositorio llamado `clearpet-iot`
+   - Crea un nuevo repositorio llamado `BioSense IOT-iot`
    - Sigue las instrucciones para subir tu código (o en VS Code: Source Control > Publish to GitHub)
 
 3. **Despliega en Vercel**:
@@ -34,7 +34,7 @@ Aplicación web IoT para monitoreo de calidad de aire y alertas ambientales.
 npm install -g vercel
 
 # Desde la carpeta del proyecto
-cd c:\Users\alexi\Desktop\ClearPet1
+cd c:\Users\alexi\Desktop\BioSense IOT1
 
 # Despliega
 vercel
@@ -130,5 +130,5 @@ Problemas comunes:
 
 ---
 
-**Creado por:** ClearPet Team  
+**Creado por:** BioSense IOT Team  
 **Última actualización:** 2026

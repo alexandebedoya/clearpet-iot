@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.clearpet.iot',
-  appName: 'Monitoreo Ambiental IoT',
+  appId: 'com.biosense.iot',
+  appName: 'BioSense IOT',
   // IMPORTANTE: Asegúrate de que coincida con la carpeta de Next.js
   webDir: 'out', 
   server: {

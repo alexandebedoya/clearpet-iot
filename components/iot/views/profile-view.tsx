@@ -151,7 +151,7 @@ export function ProfileView({ onLogout }: ProfileViewProps) {
       
       {/* Version */}
       <p className="text-center text-xs text-muted-foreground">
-        ClearPet Monitor v1.0.0
+        BioSense IOT Monitor v1.0.0
       </p>
     </div>
   )

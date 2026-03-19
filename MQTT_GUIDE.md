@@ -49,7 +49,7 @@ const char* WIFI_SSID = "TU_SSID_WIFI";           // Tu red WiFi
 const char* WIFI_PASSWORD = "TU_CONTRASEÑA_WIFI"; // Tu contraseña
 
 // Línea ~11: ID único del dispositivo
-const char* MQTT_CLIENT_ID = "ESP32_CLEARPET_001"; // Puede ser cualquier nombre
+const char* MQTT_CLIENT_ID = "ESP32_BioSense IOT_001"; // Puede ser cualquier nombre
 ```
 
 ### 1.3 Cargar el sketch
@@ -140,8 +140,8 @@ export const MQTT_CONFIG = {
   // broker: 'ws://localhost:9001',
   
   topics: {
-    sensores: 'clearpet/sensores/datos',    // ESP32 PUBLICA aquí
-    control: 'clearpet/control/comando',    // App PUBLICA aquí
+    sensores: 'BioSense IOT/sensores/datos',    // ESP32 PUBLICA aquí
+    control: 'BioSense IOT/control/comando',    // App PUBLICA aquí
   },
 };
 ```
@@ -204,16 +204,16 @@ npm install mqtt
 
 1. Abre: https://www.hivemq.com/demos/websocket-client/
 2. Conecta a: `broker.hivemq.com:8884`
-3. Suscribete a: `clearpet/sensores/datos`
+3. Suscribete a: `BioSense IOT/sensores/datos`
 4. Deberías ver mensajes JSON con datos cada 2 segundos
 
 **Opción B: Con terminal (mosquitto_sub command line)**
 
 ```bash
-mosquitto_sub -h broker.hivemq.com -t "clearpet/sensores/datos"
+mosquitto_sub -h broker.hivemq.com -t "BioSense IOT/sensores/datos"
 
 # Verás algo como:
-# {"mq4":245,"mq7":310,"nivel":"NORMAL","timestamp":1710705600000,"dispositivo":"ESP32_CLEARPET_001"}
+# {"mq4":245,"mq7":310,"nivel":"NORMAL","timestamp":1710705600000,"dispositivo":"ESP32_BioSense IOT_001"}
 ```
 
 ### Test 3: Verificar app recibe datos
@@ -230,7 +230,7 @@ npm run dev
 4. Deberías ver logs:
 ```
 [MQTT] ✅ Conectado al broker
-[MQTT] Suscrito a: clearpet/sensores/datos
+[MQTT] Suscrito a: BioSense IOT/sensores/datos
 [MQTT] Datos recibidos: {mq4: 245, mq7: 310, nivel: "NORMAL"}
 ```
 
@@ -268,7 +268,7 @@ Serial.println(WiFi.localIP()); // Debe mostrar IP válida
 // Revisa la consola del navegador (F12)
 // Deberías ver:
 // [MQTT] ✅ Conectado al broker
-// [MQTT] Suscrito a: clearpet/sensores/datos
+// [MQTT] Suscrito a: BioSense IOT/sensores/datos
 ```
 
 ---
@@ -290,9 +290,9 @@ retain: false, // Desactivar retención
 
 | Tópico | Dirección | Contenido | Frecuencia |
 |--------|-----------|-----------|-----------|
-| `clearpet/sensores/datos` | ESP32 → App | `{mq4, mq7, nivel, timestamp}` | Cada 2s |
-| `clearpet/control/comando` | App → ESP32 | `"LED_ON"` / `"LED_OFF"` | On demand |
-| `clearpet/conexion/estado` | Both | Estado conexión | On change |
+| `BioSense IOT/sensores/datos` | ESP32 → App | `{mq4, mq7, nivel, timestamp}` | Cada 2s |
+| `BioSense IOT/control/comando` | App → ESP32 | `"LED_ON"` / `"LED_OFF"` | On demand |
+| `BioSense IOT/conexion/estado` | Both | Estado conexión | On change |
 
 ---
 

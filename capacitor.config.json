@@ -1,5 +1,5 @@
 {
-  "appId": "com.clearpet.iot",
+  "appId": "com.biosense.iot",
   "appName": "Monitoreo Ambiental IoT",
   "webDir": "out",
   "bundledWebRuntime": false,
