@@ -43,6 +43,11 @@ public class UsuarioService {
         return usuarioRepository.findById(id).orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    public boolean existsByEmail(String email) {
+        return usuarioRepository.existsByEmail(email);
+    }
+
     /**
      * Procesa el login de OAuth2. Busca al usuario por email:
      * - Si existe: actualiza googleId y fotoUrl si son nulos o han cambiado.
@@ -50,40 +55,41 @@ public class UsuarioService {
      */
     public Usuario processOAuthPostLogin(String email, String nombre, String googleId, String fotoUrl) {
         log.info("[USUARIO] Procesando post-login OAuth2 para: {}", email);
-        
+
         return usuarioRepository.findByEmail(email)
-            .map(usuario -> {
-                log.debug("[USUARIO] Usuario existente encontrado, actualizando datos de Google");
-                boolean modified = false;
-                if (usuario.getGoogleId() == null) {
-                    usuario.setGoogleId(googleId);
-                    modified = true;
-                }
-                if (fotoUrl != null && !fotoUrl.equals(usuario.getFotoUrl())) {
-                    usuario.setFotoUrl(fotoUrl);
-                    modified = true;
-                }
-                return modified ? usuarioRepository.save(usuario) : usuario;
-            })
-            .orElseGet(() -> {
-                log.info("[USUARIO] Usuario no encontrado, creando nueva cuenta de Google para: {}", email);
-                Usuario nuevoUsuario = Usuario.builder()
-                    .email(email)
-                    .nombre(nombre != null ? nombre : email.split("@")[0])
-                    .googleId(googleId)
-                    .fotoUrl(fotoUrl)
-                    .password(passwordEncoder.encode("OAUTH2_USER_" + System.nanoTime()))
-                    .rol("USER")
-                    .activo(true)
-                    .verificado(true)
-                    .build();
-                try {
-                    return usuarioRepository.save(nuevoUsuario);
-                } catch (Exception e) {
-                    log.error("[USUARIO] Error al guardar nuevo usuario de Google: {}", e.getMessage());
-                    throw new DatabaseConflictException("No se pudo crear el usuario debido a un conflicto en la base de datos.");
-                }
-            });
+                .map(usuario -> {
+                    log.debug("[USUARIO] Usuario existente encontrado, actualizando datos de Google");
+                    boolean modified = false;
+                    if (usuario.getGoogleId() == null) {
+                        usuario.setGoogleId(googleId);
+                        modified = true;
+                    }
+                    if (fotoUrl != null && !fotoUrl.equals(usuario.getFotoUrl())) {
+                        usuario.setFotoUrl(fotoUrl);
+                        modified = true;
+                    }
+                    return modified ? usuarioRepository.save(usuario) : usuario;
+                })
+                .orElseGet(() -> {
+                    log.info("[USUARIO] Usuario no encontrado, creando nueva cuenta de Google para: {}", email);
+                    Usuario nuevoUsuario = Usuario.builder()
+                            .email(email)
+                            .nombre(nombre != null ? nombre : email.split("@")[0])
+                            .googleId(googleId)
+                            .fotoUrl(fotoUrl)
+                            .password(passwordEncoder.encode("OAUTH2_USER_" + System.nanoTime()))
+                            .rol("USER")
+                            .activo(true)
+                            .verificado(true)
+                            .build();
+                    try {
+                        return usuarioRepository.save(nuevoUsuario);
+                    } catch (Exception e) {
+                        log.error("[USUARIO] Error al guardar nuevo usuario de Google: {}", e.getMessage());
+                        throw new DatabaseConflictException(
+                                "No se pudo crear el usuario debido a un conflicto en la base de datos.");
+                    }
+                });
     }
 
     public Usuario createUsuario(String email, String nombre, String password, String nombreDispositivo) {
@@ -105,7 +111,8 @@ public class UsuarioService {
     }
 
     public UsuarioDto toDto(Usuario usuario) {
-        if (usuario == null) return null;
+        if (usuario == null)
+            return null;
 
         UsuarioDto dto = new UsuarioDto();
         dto.setId(usuario.getId());
