@@ -42,9 +42,18 @@ public class AuthController {
      * Devuelve un JSON con el token para que la App móvil lo capture fácilmente.
      */
     @GetMapping("/success")
-    public ResponseEntity<Map<String, Object>> authSuccess(@RequestParam("token") String token) {
-        log.info("[AUTH_CONTROLLER] Login con Google exitoso, devolviendo JSON de éxito");
+    public ResponseEntity<Map<String, Object>> authSuccess(@RequestParam(value = "token", required = false) String token) {
+        log.info("[AUTH_CONTROLLER] Procesando endpoint de éxito post-login");
         Map<String, Object> response = new HashMap<>();
+        
+        if (token == null || token.isEmpty()) {
+            log.error("[AUTH_CONTROLLER] Error: El token no fue recibido en la URL");
+            response.put("success", false);
+            response.put("error", "Token no recibido en la URL");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        log.info("[AUTH_CONTROLLER] Login con Google exitoso, devolviendo JSON de éxito");
         response.put("success", true);
         response.put("message", "Autenticación Exitosa con Google");
         response.put("token", token);

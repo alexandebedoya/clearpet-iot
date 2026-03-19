@@ -46,7 +46,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // Redirigimos internamente al controlador de éxito
         String targetUrl = "/api/auth/success?token=" + token;
 
-        log.info("[OAUTH2] Redirigiendo a endpoint de éxito: {}", targetUrl);
+        log.info("DEBUG: Redirigiendo a: {}", targetUrl);
+        System.out.println("DEBUG: Redirigiendo a: " + targetUrl);
         
         // Limpiamos los atributos de sesión de autenticación previos
         clearAuthenticationAttributes(request);
