@@ -35,8 +35,11 @@ build/
 # Java / Spring Boot
 target/
 *.class
-.mvn/
 .metadata/
+
+# Permitir que suba el wrapper de Maven (IMPORTANTE)
+!.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
 
 # Mobile (Capacitor/Android)
 android/app/build/
