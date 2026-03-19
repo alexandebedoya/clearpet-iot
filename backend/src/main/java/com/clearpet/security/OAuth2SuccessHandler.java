@@ -2,12 +2,10 @@ package com.clearpet.security;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.clearpet.entity.Usuario;
 import com.clearpet.service.UsuarioService;
@@ -26,10 +24,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final JwtTokenProvider tokenProvider;
     private final UsuarioService usuarioService;
 
-    // URL de éxito en producción para el flujo móvil/web
-    @Value("${app.oauth2.redirect-uri:https://clearpet-iot-production.up.railway.app/api/auth/success}")
-    private String redirectUri;
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
@@ -40,20 +34,23 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String googleId = oAuth2User.getAttribute("sub");
         String picture = oAuth2User.getAttribute("picture");
 
-        log.info("[OAUTH2] Login exitoso con Google: {}", email);
+        log.info("[OAUTH2] Login exitoso con Google: {}. Procesando persistencia...", email);
 
-        // Persistencia atómica
+        // 1. Sincronización de usuario en BD
         Usuario usuario = usuarioService.processOAuthPostLogin(email, name, googleId, picture);
 
-        // Generación de JWT
+        // 2. Generación del JWT
         String token = tokenProvider.generateToken(usuario);
 
-        // Redirigir al endpoint de éxito que mostrará el JSON
-        String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
-                .queryParam("token", token)
-                .build().toUriString();
+        // 3. Construcción de URL relativa para evitar problemas de protocolo (http/https)
+        // Redirigimos internamente al controlador de éxito
+        String targetUrl = "/api/auth/success?token=" + token;
 
         log.info("[OAUTH2] Redirigiendo a endpoint de éxito: {}", targetUrl);
+        
+        // Limpiamos los atributos de sesión de autenticación previos
+        clearAuthenticationAttributes(request);
+        
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }
