@@ -39,12 +39,19 @@ public class MqttDataProcessor {
             // Buscar usuario por nombre de dispositivo
             Usuario usuario = usuarioRepository.findByNombreDispositivo(dispositivoId)
                     .orElseGet(() -> {
-                        log.warn("[MQTT] Dispositivo {} no asociado a ningún usuario. Usando usuario por defecto o ignorando.", dispositivoId);
-                        // Aquí podrías decidir si crear un usuario por defecto o simplemente retornar
+                        // Lógica temporal para asociar ESP32_CLEARPET_001 al primer usuario
+                        if ("ESP32_CLEARPET_001".equals(dispositivoId)) {
+                            log.info("[MQTT_DEBUG] Forzando asociación de dispositivo {} al primer usuario encontrado en la BD.", dispositivoId);
+                            return usuarioRepository.findAll().stream().findFirst().orElse(null);
+                        }
+                        log.warn("[MQTT] Dispositivo {} no asociado a ningún usuario.", dispositivoId);
                         return null;
                     });
 
-            if (usuario == null) return;
+            if (usuario == null) {
+                log.error("[MQTT] Error: No se pudo asociar el dispositivo {} a ningún usuario.", dispositivoId);
+                return;
+            }
 
             SensorDataDto dto = SensorDataDto.builder()
                     .mq4(new BigDecimal(root.get("mq4").asInt()))
@@ -54,7 +61,7 @@ public class MqttDataProcessor {
                     .build();
 
             sensorService.saveSensorData(usuario, dto);
-            log.info("[MQTT] Datos guardados exitosamente para el usuario: {}", usuario.getEmail());
+            log.info("[MQTT] Datos guardados exitosamente para el usuario: {} (Dispositivo: {})", usuario.getEmail(), dispositivoId);
 
         } catch (Exception e) {
             log.error("[MQTT] Error al procesar el mensaje: {}", e.getMessage());

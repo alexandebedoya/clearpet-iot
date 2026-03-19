@@ -42,16 +42,16 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // 2. Generación del JWT
         String token = tokenProvider.generateToken(usuario);
 
-        // 3. Construcción de URL relativa para evitar problemas de protocolo (http/https)
-        // Redirigimos internamente al controlador de éxito
-        String targetUrl = "/api/auth/success?token=" + token;
+        // [AUTH_DEBUG] Log de nivel INFO para ver el token completo en la consola de Railway
+        log.info("[AUTH_DEBUG] JWT GENERADO: {}", token);
+        System.out.println("[AUTH_DEBUG] JWT GENERADO: " + token);
 
-        log.info("DEBUG: Redirigiendo a: {}", targetUrl);
-        System.out.println("DEBUG: Redirigiendo a: " + targetUrl);
+        // 3. Redirección con URL ABSOLUTA FIJA
+        String targetUrl = "https://clearpet-iot-production.up.railway.app/api/auth/success?token=" + token;
+
+        log.info("[OAUTH2] Redirigiendo a: {}", targetUrl);
         
-        // Limpiamos los atributos de sesión de autenticación previos
         clearAuthenticationAttributes(request);
-        
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }

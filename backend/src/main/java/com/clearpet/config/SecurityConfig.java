@@ -42,6 +42,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/login/**", "/oauth2/**").permitAll()
+                        // IMPORTANTE: Permitir acceso público explícito al endpoint de éxito
+                        .requestMatchers("/api/auth/success").permitAll()
                         .requestMatchers("/api/sensores/latest").permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated())
