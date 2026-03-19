@@ -32,7 +32,7 @@ spring:
             scope:
               - email
               - profile
-            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+            redirect-uri: "https://clearpet-iot-production.up.railway.app/login/oauth2/code/google"
         provider:
           google:
             user-name-attribute: email
@@ -65,6 +65,7 @@ mqtt:
 
 server:
   port: ${PORT:8080}
+  forward-headers-strategy: native
   servlet:
     context-path: /
   error:
