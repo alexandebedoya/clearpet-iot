@@ -13,8 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "\"usuario\"") // Coincide con el nombre de Prisma (con comillas para evitar errores de
-                             // mayúsculas)
+@Table(name = "\"usuario\"")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,13 +37,14 @@ public class Usuario implements UserDetails {
     @Builder.Default
     private String rol = "USER";
 
-    @Column(name = "google_id")
+    @Column(name = "google_id", unique = true)
     private String googleId;
 
     @Column(name = "foto_url")
     private String fotoUrl;
 
     @Column(name = "\"nombreDispositivo\"")
+    private String nombreDispositivo;
 
     @Column(name = "reset_token")
     private String resetToken;
@@ -61,11 +61,11 @@ public class Usuario implements UserDetails {
     private Boolean verificado = false;
 
     @CreationTimestamp
-    @Column(name = "\"creadoEn\"", nullable = false, updatable = false) // Ajustado a nombre de Prisma
+    @Column(name = "\"creadoEn\"", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "\"actualizadoEn\"") // Ajustado a nombre de Prisma
+    @Column(name = "\"actualizadoEn\"")
     private LocalDateTime updatedAt;
 
     // --- Métodos de UserDetails ---

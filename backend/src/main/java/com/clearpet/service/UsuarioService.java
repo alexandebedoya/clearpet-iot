@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.clearpet.dto.UsuarioDto;
 import com.clearpet.entity.Usuario;
+import com.clearpet.exception.DatabaseConflictException;
 import com.clearpet.repository.UsuarioRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,36 +23,78 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private PasswordEncoder passwordEncoder;
 
-    // Inyectamos el repositorio por constructor
+    @Autowired
     public UsuarioService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
 
-    // Inyectamos el PasswordEncoder con @Lazy para romper el ciclo circular
     @Autowired
     public void setPasswordEncoder(@Lazy PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional(readOnly = true)
     public Usuario findByEmail(String email) {
         return usuarioRepository.findByEmail(email).orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public Usuario findById(String id) {
         return usuarioRepository.findById(id).orElse(null);
     }
 
-    public boolean existsByEmail(String email) {
-        return usuarioRepository.existsByEmail(email);
+    /**
+     * Procesa el login de OAuth2. Busca al usuario por email:
+     * - Si existe: actualiza googleId y fotoUrl si son nulos o han cambiado.
+     * - Si no existe: lo crea.
+     */
+    public Usuario processOAuthPostLogin(String email, String nombre, String googleId, String fotoUrl) {
+        log.info("[USUARIO] Procesando post-login OAuth2 para: {}", email);
+        
+        return usuarioRepository.findByEmail(email)
+            .map(usuario -> {
+                log.debug("[USUARIO] Usuario existente encontrado, actualizando datos de Google");
+                boolean modified = false;
+                if (usuario.getGoogleId() == null) {
+                    usuario.setGoogleId(googleId);
+                    modified = true;
+                }
+                if (fotoUrl != null && !fotoUrl.equals(usuario.getFotoUrl())) {
+                    usuario.setFotoUrl(fotoUrl);
+                    modified = true;
+                }
+                return modified ? usuarioRepository.save(usuario) : usuario;
+            })
+            .orElseGet(() -> {
+                log.info("[USUARIO] Usuario no encontrado, creando nueva cuenta de Google para: {}", email);
+                Usuario nuevoUsuario = Usuario.builder()
+                    .email(email)
+                    .nombre(nombre != null ? nombre : email.split("@")[0])
+                    .googleId(googleId)
+                    .fotoUrl(fotoUrl)
+                    .password(passwordEncoder.encode("OAUTH2_USER_" + System.nanoTime()))
+                    .rol("USER")
+                    .activo(true)
+                    .verificado(true)
+                    .build();
+                try {
+                    return usuarioRepository.save(nuevoUsuario);
+                } catch (Exception e) {
+                    log.error("[USUARIO] Error al guardar nuevo usuario de Google: {}", e.getMessage());
+                    throw new DatabaseConflictException("No se pudo crear el usuario debido a un conflicto en la base de datos.");
+                }
+            });
     }
 
     public Usuario createUsuario(String email, String nombre, String password, String nombreDispositivo) {
-        log.info("[USUARIO] Creando nuevo usuario: {}", email);
+        if (usuarioRepository.existsByEmail(email)) {
+            throw new DatabaseConflictException("El email ya está registrado.");
+        }
 
         Usuario usuario = Usuario.builder()
                 .email(email)
                 .nombre(nombre)
-                .password(passwordEncoder.encode(password)) // Ya no dará error
+                .password(passwordEncoder.encode(password))
                 .nombreDispositivo(nombreDispositivo)
                 .rol("USER")
                 .activo(true)
@@ -61,29 +104,8 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public Usuario createGoogleUsuario(String email, String nombre, String googleId) {
-        log.info("[USUARIO] Creando usuario de Google: {}", email);
-
-        Usuario usuario = Usuario.builder()
-                .email(email)
-                .nombre(nombre)
-                .password(passwordEncoder.encode(String.valueOf(System.nanoTime())))
-                .rol("USER")
-                .googleId(googleId)
-                .activo(true)
-                .verificado(true)
-                .build();
-
-        return usuarioRepository.save(usuario);
-    }
-
-    public Optional<Usuario> findByGoogleId(String googleId) {
-        return usuarioRepository.findByGoogleId(googleId);
-    }
-
     public UsuarioDto toDto(Usuario usuario) {
-        if (usuario == null)
-            return null;
+        if (usuario == null) return null;
 
         UsuarioDto dto = new UsuarioDto();
         dto.setId(usuario.getId());

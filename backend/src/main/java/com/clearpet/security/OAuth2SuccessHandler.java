@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.clearpet.entity.Usuario;
-import com.clearpet.repository.UsuarioRepository;
+import com.clearpet.service.UsuarioService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtTokenProvider tokenProvider;
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
 
     @Value("${app.oauth2.redirect-uri:http://localhost:3000/oauth/callback}")
     private String redirectUri;
@@ -41,33 +41,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         log.info("[OAUTH2] Login exitoso con Google: {}", email);
 
-        Usuario usuario = usuarioRepository.findByEmail(email)
-                .map(u -> {
-                    boolean modified = false;
-                    if (u.getGoogleId() == null) {
-                        u.setGoogleId(googleId);
-                        modified = true;
-                    }
-                    if (picture != null && !picture.equals(u.getFotoUrl())) {
-                        u.setFotoUrl(picture);
-                        modified = true;
-                    }
-                    return modified ? usuarioRepository.save(u) : u;
-                })
-                .orElseGet(() -> {
-                    Usuario newUser = Usuario.builder()
-                            .email(email)
-                            .nombre(name != null ? name : email.split("@")[0])
-                            .googleId(googleId)
-                            .fotoUrl(picture)
-                            .password("") 
-                            .rol("USER")
-                            .activo(true)
-                            .verificado(true)
-                            .build();
-                    return usuarioRepository.save(newUser);
-                });
+        // Delegamos la persistencia atómica al servicio
+        Usuario usuario = usuarioService.processOAuthPostLogin(email, name, googleId, picture);
 
+        // Generamos el token JWT una vez el usuario está persistido
         String token = tokenProvider.generateToken(usuario);
 
         String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
